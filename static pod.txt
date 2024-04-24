@@ -1,0 +1,6 @@
+# Create a static pod named static-busybox that uses the busybox image and the command sleep 1000
+
+Create a pod definition file called static-busybox.yaml with the provided specs and place it under /etc/kubernetes/manifests directory.
+
+Create a pod definition file in the manifests folder. To do this, run the command:
+kubectl run --restart=Never --image=busybox static-busybox --dry-run=client -o yaml --command -- sleep 1000 > /etc/kubernetes/manifests/static-busybox.yaml
