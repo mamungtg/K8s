@@ -46,7 +46,7 @@ cluster1.db                                                                     
 
 student-node ~ ➜ 
 
-==
+=============================================================================================================================
 
 2. An ETCD backup for cluster2 is stored at /opt/cluster2.db.
 Use this snapshot file to carryout a restore on cluster2 to a new path /var/lib/etcd-data-new.
