@@ -1,0 +1,47 @@
+Take a backup of etcd on cluster1 and save it on the student-node at the path /opt/cluster1.db
+
+If needed, make sure to set the context to cluster1 (on the student-node):
+
+student-node ~ ➜  kubectl config use-context cluster1
+Switched to context "cluster1".
+
+student-node ~ ➜  
+
+On the student-node:
+
+First set the context to cluster1:
+student-node ~ ➜  kubectl config use-context cluster1
+Switched to context "cluster1".
+
+Next, inspect the endpoints and certificates used by the etcd pod. We will make use of these to take the backup.
+
+student-node ~ ✖ kubectl describe  pods -n kube-system etcd-cluster1-controlplane  | grep advertise-client-urls
+      --advertise-client-urls=https://10.1.218.16:2379
+
+student-node ~ ➜  
+
+student-node ~ ➜  kubectl describe  pods -n kube-system etcd-cluster1-controlplane  | grep pki
+      --cert-file=/etc/kubernetes/pki/etcd/server.crt
+      --key-file=/etc/kubernetes/pki/etcd/server.key
+      --peer-cert-file=/etc/kubernetes/pki/etcd/peer.crt
+      --peer-key-file=/etc/kubernetes/pki/etcd/peer.key
+      --peer-trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt
+      --trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt
+      /etc/kubernetes/pki/etcd from etcd-certs (rw)
+    Path:          /etc/kubernetes/pki/etcd
+
+student-node ~ ➜  
+
+SSH to the controlplane node of cluster1 and then take the backup using the endpoints and certificates we identified above:
+
+cluster1-controlplane ~ ➜  ETCDCTL_API=3 etcdctl --endpoints=https://10.1.220.8:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key snapshot save /opt/cluster1.db
+Snapshot saved at /opt/cluster1.db
+
+cluster1-controlplane ~ ➜  
+
+Finally, copy the backup to the student-node. To do this, go back to the student-node and use scp as shown below:
+
+student-node ~ ➜  scp cluster1-controlplane:/opt/cluster1.db /opt
+cluster1.db                                                                                                        100% 2088KB 112.3MB/s   00:00    
+
+student-node ~ ➜ 
