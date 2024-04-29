@@ -1,4 +1,4 @@
-# Exposing as a service
+## Exposing as a service
 
 * Create a service using kubectl
 
