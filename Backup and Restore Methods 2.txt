@@ -1,3 +1,4 @@
+================================================================================================================================
 1. Take a backup of etcd on cluster1 and save it on the student-node at the path /opt/cluster1.db
 
 If needed, make sure to set the context to cluster1 (on the student-node):
